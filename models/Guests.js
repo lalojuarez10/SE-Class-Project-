@@ -8,6 +8,10 @@ const GuestSchema = new Schema({
   guest_date: {
     type: Date,
     default: Date.now
+  },
+  shippingAddress: {
+    type: String,
+    false: false
   }
 })
 

@@ -48,6 +48,12 @@ class ShoppingCartModal extends Component {
     this.toggle();
   }
 
+  handleClick = e => {
+    e.preventDefault();
+
+    console.log("Clicked the href");
+  }
+
   componentDidMount() {
     this.props.loadUser();
   }
@@ -55,12 +61,18 @@ class ShoppingCartModal extends Component {
   render() {
     return (
       <div>
+
+
         <Button
           color="dark"
           style={{ marginBottom: '2rem' }}
           onClick={this.toggle}
         >
           Shopping Cart
+
+          <a href='#' onClick={this.handleClick}>
+            Click ME!
+        </a>
           <Modal
             isOpen={this.state.modal}
             toggle={this.toggle}
@@ -81,7 +93,6 @@ class ShoppingCartModal extends Component {
             </ModalBody>
           </Modal>
         </Button>
-
       </div>
     );
   }

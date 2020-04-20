@@ -13,19 +13,47 @@ import {
   Label,
   Form,
   FormGroup,
-  Input
+  Input,
+  Alert
 } from 'reactstrap';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { connect } from 'react-redux';
 import { getGuestItems } from '../actions/guestItemActions';
 import { loadGuest } from '../actions/guestActions';
 import PropTypes from 'prop-types';
+import ShippingAddressModal from './ShippingAddressModal';
+
+const SmartyStreetsSDK = require("smartystreets-javascript-sdk");
+const SmartyStreetsCore = SmartyStreetsSDK.core;
+const Lookup = SmartyStreetsSDK.usAutocomplete.Lookup;
+
+let websiteKey = "18911612130131961";
+const credentials = new SmartyStreetsCore.SharedCredentials(websiteKey);
+
+let client = SmartyStreetsCore.buildClient.usAutocomplete(credentials);
+
+
+function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds) {
+      break;
+    }
+  }
+}
 
 class GuestCheckoutModal extends Component {
   // State of the component
   state = {
-    modal: false
-  }
+    modal: false,
+    name: '',
+    email: '',
+    streetAddres: '',
+    cityAddress: '',
+    stateAddress: '',
+    zipcode: '',
+    correctAddress: true
+  };
 
   // Prop-types to document the intended types of properties passed to components
   static propTypes = {
@@ -41,6 +69,16 @@ class GuestCheckoutModal extends Component {
     });
   }
 
+  updateCorrectAddress = (solidAddress) => {
+    this.setState({
+      correctAddress: solidAddress
+    });
+
+    if (this.correctAddress) {
+      this.toggle();
+    }
+  }
+
   // For user input on the UI
   onChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
@@ -49,13 +87,44 @@ class GuestCheckoutModal extends Component {
   onSubmit = (e) => {
     e.preventDefault();
 
-    this.toggle();
+    let solidAddress = true;
+    const { name, email, streetAddress, cityAddress, stateAddress, zipcode } = this.state;
+    let fullAddress = streetAddress + ", " + cityAddress;
+    console.log(fullAddress);
+    let lookup = new Lookup(streetAddress + ", " + cityAddress);
+
+
+    client.send(lookup)
+      .then(handleSuccess)
+      //.then(this.updateCorrectAddress(solidAddress))
+      .catch(handleError);
+
+
+    async function handleSuccess(response) {
+
+      console.log(response.result);
+
+      response.result != null ?
+        solidAddress = true : solidAddress = false;
+    }
+
+    async function handleError(response) {
+      console.log(response);
+      solidAddress = false;
+    }
+
+    sleep(10000);
+    console.log(solidAddress);
+    this.updateCorrectAddress(solidAddress);
   }
 
   componentDidMount() {
     this.props.getGuestItems(this.props.guest.guest.guest._id);
     console.log(this.props.guest.guest.guest._id);
+
   }
+
+
 
   render() {
     return (
@@ -74,6 +143,7 @@ class GuestCheckoutModal extends Component {
         >
           <ModalHeader toggle={this.toggle}> Checkout</ModalHeader>
           <ModalBody>
+
             <Label>Reivew Items</Label>
             <ListGroup>
               <TransitionGroup className="guest-checkout-list">
@@ -87,71 +157,7 @@ class GuestCheckoutModal extends Component {
               </TransitionGroup>
             </ListGroup>
             <Container>
-              Enter Shipping Address Information
-              <Form onSubmit={this.onSubmit}>
-                <FormGroup>
-                  <Label for="name"> Name</Label>
-                  <Input
-                    type="text"
-                    name="name"
-                    id="name"
-                    placeholder="name"
-                    className="mb-3"
-                    onChange={this.onChange}>
-                  </Input>
-                  <Label for="name"> Email</Label>
-                  <Input
-                    type="email"
-                    name="email"
-                    id="email"
-                    placeholder="email"
-                    className="mb-3"
-                    onChange={this.onChange}>
-                  </Input>
-                  <Label for="name"> Street Address </Label>
-                  <Input
-                    type="streetAddres"
-                    name="streetAddress"
-                    id="streetAddress"
-                    placeholder="streetAddress"
-                    className="mb-3"
-                    onChange={this.onChange}>
-                  </Input>
-                  <Label for="name"> City</Label>
-                  <Input
-                    type="city"
-                    name="city"
-                    id="city"
-                    placeholder="city"
-                    className="mb-3"
-                    onChange={this.onChange}>
-                  </Input>
-                  <Label for="name"> State</Label>
-                  <Input
-                    type="state"
-                    name="state"
-                    id="state"
-                    placeholder="state"
-                    className="mb-3"
-                    onChange={this.onChange}>
-                  </Input>
-                  <Label for="name"> Zip Code</Label>
-                  <Input
-                    type="zipcode"
-                    name="zipcode"
-                    id="zipcode"
-                    placeholder="zipcode"
-                    className="mb-3"
-                    onChange={this.onChange}>
-                  </Input>
-                  <Button
-                    color="dark"
-                    style={{ marginTop: '2rem' }}
-                    block>
-                    Place your order
-                    </Button>
-                </FormGroup>
-              </Form>
+              <ShippingAddressModal />
             </Container>
           </ModalBody>
         </Modal>

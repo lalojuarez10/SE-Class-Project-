@@ -12,6 +12,11 @@ import ShoppingCartModal from './components/ShoppingCartModal';
 import ProductsList from './components/ProductsList';
 import CheckoutModal from './components/CheckoutModal';
 import { loadGuest, createGuest } from './actions/guestActions';
+import GuestLoginPage from './components/GuestLoginPage';
+import { connect } from 'react-redux';
+import Fragment from 'react';
+
+let showContents = false;
 
 class App extends Component {
   componentDidMount() {
@@ -28,15 +33,22 @@ class App extends Component {
           <AppNavbar />
           <Container>
             <ShoppingCartModal></ShoppingCartModal>
-
           </Container>
           <Container>
             <ProductsList />
           </Container>
+          <Container>
+            <GuestLoginPage />
+          </Container>}
         </div>
       </Provider>
     );
   }
 }
+
+const mapStateToProps = (state) => ({        // property: index reducer
+  user: state.auth.user,                    // property: index reducer
+  guest: state.guest
+});
 
 export default App;
