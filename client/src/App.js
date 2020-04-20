@@ -6,7 +6,7 @@ import ShoppingList from './components/ShoppingList'; //include the shoppin list
 import { Provider } from 'react-redux';               // binds react to redux
 import store from './store';
 import ItemModal from './components/ItemModal';
-import { Container } from 'reactstrap';
+import { Container, NavItem, Button } from 'reactstrap';
 import { loadUser } from './actions/authActions';
 import ShoppingCartModal from './components/ShoppingCartModal';
 import ProductsList from './components/ProductsList';
@@ -14,15 +14,28 @@ import CheckoutModal from './components/CheckoutModal';
 import { loadGuest, createGuest } from './actions/guestActions';
 import GuestLoginPage from './components/GuestLoginPage';
 import { connect } from 'react-redux';
-import Fragment from 'react';
+import {
+  Fragment,
+  Nav
+} from 'react';
 
 let showContents = false;
 
 class App extends Component {
-  componentDidMount() {
+  componentDidUpdate() {
     //store.dispatch(createGuest());
     store.dispatch(loadUser());                  // loads user continously
     store.dispatch(loadGuest());
+  }
+
+  handleGuest = e => {
+    e.preventDefault();
+
+    store.dispatch(createGuest());
+
+    showContents = true;
+
+    this.forceUpdate();
   }
 
   render() {
@@ -31,15 +44,28 @@ class App extends Component {
         <div className="App">
           <script src="http://localhost:6000"></script>
           <AppNavbar />
-          <Container>
-            <ShoppingCartModal></ShoppingCartModal>
-          </Container>
-          <Container>
-            <ProductsList />
-          </Container>
-          <Container>
-            <GuestLoginPage />
-          </Container>}
+
+          {showContents ?
+            <Fragment>
+              <Container>
+                <ShoppingCartModal></ShoppingCartModal>
+              </Container>
+              <Container>
+
+                <ProductsList />
+              </Container>
+            </Fragment> :
+
+            <Button
+              color='dark'
+              style={{ marginBottom: '2rem' }}
+              onClick={this.handleGuest}>
+              Continue as Guest
+              </Button>
+
+          }
+
+
         </div>
       </Provider>
     );
