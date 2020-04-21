@@ -61,18 +61,12 @@ class ShoppingCartModal extends Component {
   render() {
     return (
       <div>
-
-
         <Button
           color="dark"
           style={{ marginBottom: '2rem' }}
           onClick={this.toggle}
         >
           Shopping Cart
-
-          <a href='#' onClick={this.handleClick}>
-            Click ME!
-        </a>
           <Modal
             isOpen={this.state.modal}
             toggle={this.toggle}
