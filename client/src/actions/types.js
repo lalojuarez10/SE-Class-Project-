@@ -21,3 +21,6 @@ export const GET_GUEST_ITEMS = "GET_GUEST_ITEMS";
 export const ADD_GUEST_ITEMS = "ADD_GUEST_ITEMS";
 export const DELETE_GUEST_ITEMS = "DELETE_GUEST_ITEMS";
 export const GUEST_ITEMS_LOADING = "GUEST_ITEMS_LOADING";
+export const GET_ORDER = "GET_ORDER";
+export const ADD_ORDER = "ADD_ORDER";
+export const ORDER_LOADING = "ORDER_LOADING";

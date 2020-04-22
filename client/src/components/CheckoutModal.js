@@ -22,6 +22,7 @@ import { connect } from 'react-redux';
 import { getItems } from '../actions/itemActions';
 import { loadUser } from '../actions/authActions';
 import PropTypes from 'prop-types';
+import LoggedInOrders from './LoggedInOrders';
 
 class CheckoutModal extends Component {
   // State of the component
@@ -87,6 +88,9 @@ class CheckoutModal extends Component {
               <Container>{user.cityAddress}</Container>
               <Container>{user.stateAddress}</Container>
               <Container>{user.zipCode}</Container>
+            </Container>
+            <Container>
+              <LoggedInOrders></LoggedInOrders>
             </Container>
 
           </ModalBody>

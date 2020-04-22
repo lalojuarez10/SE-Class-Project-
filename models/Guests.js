@@ -11,7 +11,7 @@ const GuestSchema = new Schema({
   },
   shippingAddress: {
     type: String,
-    false: false
+    default: ''
   }
 })
 

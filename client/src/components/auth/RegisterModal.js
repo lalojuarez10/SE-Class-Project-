@@ -19,6 +19,17 @@ import PropTypes from 'prop-types';
 import { register } from '../../actions/authActions';
 import { clearErrors } from '../../actions/errorActions';
 
+const SmartyStreetsSDK = require("smartystreets-javascript-sdk");
+const SmartyStreetsCore = SmartyStreetsSDK.core;
+const Lookup = SmartyStreetsSDK.usAutocomplete.Lookup;
+
+let websiteKey = "18911612130131961";
+const credentials = new SmartyStreetsCore.SharedCredentials(websiteKey);
+
+let client = SmartyStreetsCore.buildClient.usAutocomplete(credentials);
+
+let solidAddress = true;
+
 class RegisterModal extends Component {
   // state of the component
   state = {
@@ -45,19 +56,40 @@ class RegisterModal extends Component {
   componentDidUpdate(prevProps) {
     const { error, isAuthenticated } = this.props
 
-    if (error != prevProps.error) {
-      // Check for register error
-      if (error.id == 'REGISTER_FAIL') {
-        this.setState({ msg: error.msg.msg });
-      } else {
-        this.setState({ msg: null });
+    if (this.state.cityAddress) {
+      if (this.state.streetAddress) {
+        let lookup = new Lookup(this.state.streetAddress + ", " + this.state.cityAddress);
+
+        client.send(lookup)
+          .then(handleSuccess)
+          .catch(handleError);
+
+        async function handleSuccess(response) {
+          response.result.length != 0 ?
+            solidAddress = true : solidAddress = false;
+        }
+
+        async function handleError(response) {
+          console.log(response);
+          solidAddress = false;
+        }
+
+        if (error != prevProps.error) {
+          // Check for register error
+          if (error.id == 'REGISTER_FAIL') {
+            this.setState({ msg: error.msg.msg });
+          } else {
+            this.setState({ msg: null });
+          }
+        }
+        // If the user is authenticated then close the modal
+        if (this.state.modal == true) {
+          if (isAuthenticated && solidAddress) {
+            this.toggle();
+          }
+        }
       }
-    }
-    // If the user is authenticated then close the modal
-    if (this.state.modal == true) {
-      if (isAuthenticated) {
-        this.toggle();
-      }
+
     }
   }
 
@@ -75,22 +107,27 @@ class RegisterModal extends Component {
 
   onSubmit = e => {                         // get input from UI button
     e.preventDefault();                    // prevent form actually submitting
+    if (solidAddress) {
+      const { name, email, password, streetAddress, cityAddress, stateAddress, zipCode } = this.state;
 
-    const { name, email, password, streetAddress, cityAddress, stateAddress, zipCode } = this.state;
+      // Create user object
+      const newUser = {
+        name,
+        email,
+        password,
+        streetAddress,
+        cityAddress,
+        stateAddress,
+        zipCode,
+      };
 
-    // Create user object
-    const newUser = {
-      name,
-      email,
-      password,
-      streetAddress,
-      cityAddress,
-      stateAddress,
-      zipCode,
-    };
+      // Attempt to register
+      this.props.register(newUser);
+    }
+    else {
+      this.forceUpdate();
+    }
 
-    // Attempt to register
-    this.props.register(newUser);
   }
 
   render() {
@@ -105,6 +142,7 @@ class RegisterModal extends Component {
         >
           <ModalHeader toggle={this.toggle}>Register</ModalHeader>
           <ModalBody>
+            {!solidAddress ? <Alert color="danger">{this.state.streetAddres} Not A Valid Address</Alert> : null}
             {this.state.msg ? <Alert color="danger">{this.state.msg}</Alert> : null}
             <Form onSubmit={this.onSubmit}>
               <FormGroup>

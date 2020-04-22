@@ -11,6 +11,8 @@ import {
   ModalHeader,
   ModalBody,
   Label,
+  Row,
+  Col,
   Form,
   FormGroup,
   Input,
@@ -22,25 +24,9 @@ import { getGuestItems } from '../actions/guestItemActions';
 import { loadGuest } from '../actions/guestActions';
 import PropTypes from 'prop-types';
 import ShippingAddressModal from './ShippingAddressModal';
+import Orders from './Orders';
+import { getOrder } from '../actions/orderActions';
 
-const SmartyStreetsSDK = require("smartystreets-javascript-sdk");
-const SmartyStreetsCore = SmartyStreetsSDK.core;
-const Lookup = SmartyStreetsSDK.usAutocomplete.Lookup;
-
-let websiteKey = "18911612130131961";
-const credentials = new SmartyStreetsCore.SharedCredentials(websiteKey);
-
-let client = SmartyStreetsCore.buildClient.usAutocomplete(credentials);
-
-
-function sleep(milliseconds) {
-  var start = new Date().getTime();
-  for (var i = 0; i < 1e7; i++) {
-    if ((new Date().getTime() - start) > milliseconds) {
-      break;
-    }
-  }
-}
 
 class GuestCheckoutModal extends Component {
   // State of the component
@@ -65,66 +51,24 @@ class GuestCheckoutModal extends Component {
   // Toggle the modal to open and close
   toggle = () => {
     this.setState({
-      modal: !this.state.modal
-    });
-  }
-
-  updateCorrectAddress = (solidAddress) => {
-    this.setState({
-      correctAddress: solidAddress
+      modal: !this.state.modal,
+      correctAddress: this.props.guest.guest.guest.shippingAddress
     });
 
-    if (this.correctAddress) {
-      this.toggle();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.guest.guest.guest.shippingAddress == this.props.guest.guest.guest.shippingAddress) {
+
     }
   }
 
-  // For user input on the UI
-  onChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value });
-  }
-
-  onSubmit = (e) => {
-    e.preventDefault();
-
-    let solidAddress = true;
-    const { name, email, streetAddress, cityAddress, stateAddress, zipcode } = this.state;
-    let fullAddress = streetAddress + ", " + cityAddress;
-    console.log(fullAddress);
-    let lookup = new Lookup(streetAddress + ", " + cityAddress);
-
-
-    client.send(lookup)
-      .then(handleSuccess)
-      //.then(this.updateCorrectAddress(solidAddress))
-      .catch(handleError);
-
-
-    async function handleSuccess(response) {
-
-      console.log(response.result);
-
-      response.result != null ?
-        solidAddress = true : solidAddress = false;
-    }
-
-    async function handleError(response) {
-      console.log(response);
-      solidAddress = false;
-    }
-
-    sleep(10000);
-    console.log(solidAddress);
-    this.updateCorrectAddress(solidAddress);
-  }
-
+  /*
   componentDidMount() {
     this.props.getGuestItems(this.props.guest.guest.guest._id);
     console.log(this.props.guest.guest.guest._id);
-
   }
-
-
+  */
 
   render() {
     return (
@@ -157,8 +101,17 @@ class GuestCheckoutModal extends Component {
               </TransitionGroup>
             </ListGroup>
             <Container>
-              <ShippingAddressModal />
+              <Row>
+                <Col>
+                  <Label>Provide Valid Shipping Address to Checkout</Label>
+                  <ShippingAddressModal></ShippingAddressModal>
+                </Col>
+              </Row>
+              <Container>
+                <Orders></Orders>
+              </Container>
             </Container>
+
           </ModalBody>
         </Modal>
       </Container>
@@ -168,7 +121,8 @@ class GuestCheckoutModal extends Component {
 
 const mapStateToProps = state => ({
   item: state.guestItems,
-  guest: state.guest
+  guest: state.guest,
+  order: state.orders
 })
 
-export default connect(mapStateToProps, { getGuestItems, loadGuest })(GuestCheckoutModal);
+export default connect(mapStateToProps, { getGuestItems, loadGuest, getOrder })(GuestCheckoutModal);
