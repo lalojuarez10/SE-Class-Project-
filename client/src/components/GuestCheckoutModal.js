@@ -100,18 +100,25 @@ class GuestCheckoutModal extends Component {
                 ))}
               </TransitionGroup>
             </ListGroup>
+            <Row>
+              <Container>
+
+              </Container>
+            </Row>
             <Container>
               <Row>
                 <Col>
-                  <Label>Provide Valid Shipping Address to Checkout</Label>
+                  <Label style={{ marginTop: '4rem', marginLeft: '4rem' }}> Provide Valid Shipping Address to Checkout</Label>
                   <ShippingAddressModal></ShippingAddressModal>
                 </Col>
               </Row>
-              <Container>
-                <Orders></Orders>
-              </Container>
             </Container>
+            <Container>
 
+            </Container>
+            <Container>
+              <Orders></Orders>
+            </Container>
           </ModalBody>
         </Modal>
       </Container>

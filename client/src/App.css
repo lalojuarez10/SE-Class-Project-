@@ -19,3 +19,47 @@
   opacity: 0.01;
   opacity: opacity 10000ms ease-in;
 }
+
+body, html {
+  height: 100%;
+  margin: 0;
+}
+
+.App {
+  /* The image used */
+  background-image: url(https://cdn.wallpapersafari.com/86/83/A2pDgU.jpg);
+
+  /* Full height */
+  height: 100%; 
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.LoginModal {
+  /* The image used */
+  background-image: url(https://images2.minutemediacdn.com/image/upload/c_crop,h_1695,w_2520,x_0,y_142/v1554922648/shape/mentalfloss/548648-istock-462548187.jpg?itok=AuulHEmD);
+
+  /* Full height */
+  height: 100%; 
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.ProductsList {
+  /* The image used */
+  background-image: url(https://wallpaperaccess.com/full/866025.jpg);
+
+  /* Full height */
+  height: 100%; 
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}

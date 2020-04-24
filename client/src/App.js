@@ -31,6 +31,12 @@ import LoginButton from './components/LoginButton';
 
 let showContents = false;
 
+var sectionStyle = {
+  backgroundImage: 'url(https://cdn.wallpapersafari.com/86/83/A2pDgU.jpg)',
+  backgroundSize: 'cover',
+  height: '1100px'
+}
+
 
 class App extends Component {
   componentDidUpdate() {
@@ -39,24 +45,27 @@ class App extends Component {
     //store.dispatch(loadGuest());
   }
 
+
   render() {
     return (
       <Provider store={store}>
-        <div className="App">
+        <div className="App" style={sectionStyle}>
           <script src="http://localhost:6000/"></script>
           <AppNavbar />
           <BrowserRouter>
-            <div>
-              <Link to="/Users/josejuarez/Desktop/UH/Software Engineering/Project/client/src/components/LoginButton.js">
-              </Link>
-              <Route path="/" component={LoginButton} />
-            </div>
+
+            <Link to="/Users/josejuarez/Desktop/UH/Software Engineering/Project/client/src/components/LoginButton.js">
+            </Link>
+            <Route path="/" component={LoginButton} />
+
           </BrowserRouter>
         </div>
       </Provider>
     );
   }
 }
+
+
 
 const mapStateToProps = (state) => ({        // property: index reducer
   user: state.auth.user,                    // property: index reducer

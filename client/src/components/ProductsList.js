@@ -26,6 +26,13 @@ import { createGuest, loadGuest } from '../actions/guestActions';
 import { addGuestItem } from '../actions/guestItemActions';
 import CheckoutModal from './CheckoutModal';
 
+var sectionStyle = {
+  backgroundImage: 'url(https://wallpaperaccess.com/full/866025.jpg)',
+  backgroundSize: 'percentage',
+  height: '500px',
+  width: '100px'
+}
+
 
 class ProductsList extends Component {
   // State of the component
@@ -113,37 +120,39 @@ class ProductsList extends Component {
     const { products } = this.props.products;
 
     return (
-      <Container>
-        <ListGroup>
-          <TransitionGroup className="products-list">
-            {products.map(({ productID, name }) => (
-              <CSSTransition key={productID} timeout={500} classNames="fade">
-                <ListGroupItem>
-                  <Button
-                    className="addToCart-btn"
-                    color="dark"
-                    size="sm"
-                    onClick={this.openModal.bind(productID, name)}>
-                    {name}
-                  </Button>
-                  <Modal isOpen={this.state.modal} toggle={this.toggle}>
-                    <ModalHeader toggle={this.toggle}> Add {this.state.name} to Shopping Cart?</ModalHeader>
-                    <ModalBody>
-                      <Button
-                        className="yes"
-                        color="dark"
-                        size="sm"
-                        onClick={(e) => this.onSubmit(e)}>
-                        YES
+      <div className="ProductsList">
+        <Container>
+          <ListGroup>
+            <TransitionGroup className="products-list" style={sectionStyle} color='dark'>
+              {products.map(({ productID, name }) => (
+                <CSSTransition key={productID} timeout={500} classNames="fade">
+                  <ListGroupItem color='dark'>
+                    <Button
+                      className="addToCart-btn"
+                      color="dark"
+                      size="sm"
+                      onClick={this.openModal.bind(productID, name)}>
+                      {name}
+                    </Button>
+                    <Modal isOpen={this.state.modal} toggle={this.toggle}>
+                      <ModalHeader toggle={this.toggle}> Add {this.state.name} to Shopping Cart?</ModalHeader>
+                      <ModalBody>
+                        <Button
+                          className="yes"
+                          color="dark"
+                          size="sm"
+                          onClick={(e) => this.onSubmit(e)}>
+                          YES
                         </Button>
-                    </ModalBody>
-                  </Modal>
-                </ListGroupItem>
-              </CSSTransition>
-            ))}
-          </TransitionGroup>
-        </ListGroup>
-      </Container>
+                      </ModalBody>
+                    </Modal>
+                  </ListGroupItem>
+                </CSSTransition>
+              ))}
+            </TransitionGroup>
+          </ListGroup>
+        </Container>
+      </div>
     );
   }
 }

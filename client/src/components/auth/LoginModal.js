@@ -19,6 +19,13 @@ import PropTypes from 'prop-types';
 import { login } from '../../actions/authActions';
 import { clearErrors } from '../../actions/errorActions';
 
+var sectionStyle = {
+  backgroundImage: 'url(https://images2.minutemediacdn.com/image/upload/c_crop,h_1695,w_2520,x_0,y_142/v1554922648/shape/mentalfloss/548648-istock-462548187.jpg?itok=AuulHEmD)',
+  backgroundSize: 'contain',
+  height: '100px',
+  width: '-50px'
+}
+
 class LoginModal extends Component {
   state = {
     modal: false,                  // represents if the modal is open or not
@@ -80,7 +87,7 @@ class LoginModal extends Component {
 
   render() {
     return (
-      <div>
+      <div className="LoginModal" style={sectionStyle}>
         <NavLink onClick={this.toggle} href="#">
           Login
         </NavLink>
